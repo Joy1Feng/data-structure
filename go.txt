@@ -1,0 +1,343 @@
+一.go基础
+  1.go源文件以go为扩展名
+  2.go应用程序的执行入口是main()函数
+  3.go严格区分大小写
+  4.go语言,每个语句后不需要分号,go语言会在每行后自动加分号
+  5.go是一行一行进行编译的
+  6.go语言定义的变量或者import的包如果没有使用到,代码便能通过编译
+  7.大括号必须成对出现
+
+编译文件  go build hello.go
+运行文件  go run hello.go / hello.exe
+
+
+转义字符
+\t  \r  \n \\ \"
+
+格式化
+gofmt hello.go
+gofmt -w hello.go  //把格式化后的内容输入到hello.go文件中
+
+命令行--》操作dos操作系统--》dos操作系统操作windows
+
+cd /d f:   cd到d盘
+cd \       cd到当前盘符的根
+md joy     创建一个目录
+rd joy     删除目录
+rd /q/s  joy  不带询问
+rd /s         带询问
+d:\test\abc.txt  创建abc.txt
+echo hello > abc.txt  追加内容
+copy abc.txt d:\test   复制文件
+copy abc.txt d:\test\ok.txt   复制文件,并修改名字
+move abc.txt f:\   移动文件
+del abc.tx  删除文件
+cls    清屏
+
+
+变量使用的三种方式
+ 1.var i int //此时输出i=0,默认值为0
+ 2.var num = 11.2  //根据值自行判定变量类型
+ 3.name := "joy"  :=左侧的变量不应该已经申明过的
+ 4.多变量声明
+   a, name, b := 100, "tom", 888
+ 5.一次声明多个全局变量(在go函数外部定义变量就是全局变量)
+   var (
+	n1 = 200
+	n2 = 300
+	name = "joy"
+)
+ 6.变量=变量名+值+数据类型
+
+声明变量-->初始化变量-->赋值
+
++ 两边都是数字做加法
+  做字符串的拼接
+
+数据类型: 基本数据类型            +           复杂数据类型
+      数值型+字符型+布尔型+字符串     指针+数组+结构体+管道+函数+切片+接口+map
+    整数+浮点+复数
+
+
+查看变量的数据类型 fmt.Printf("%T", i)
+查看变量占用字节大小和数据类型  fmt.Printf("%T %d", i, unsafe.Sizeof(i))
+
+
+导入多个包习惯用
+import (
+    "fmt"
+    "unsafe"
+)
+
+
+浮点数会有精度损失, float64比float32的要准确
+
+
+go存储单个字符(字母),使用byte来保存
+go的字符串是由字节组成的
+
+var c1 byte = "0"
+var c2 byte = "a"
+var c3 byte = "北"
+fmt.Println(c1) //45
+fmt.Println(c2) //97
+fmt.Println(c3) //无法输出,已经超出范围
+
+不需要转换而直接输出"0", "a", "北"
+fmt.Printf("%c %c %c", c1, c2, c3)
+
+var c4 int = 22269
+fmt.Printf("%c", c4) // "国"
+
+
+bool   true  false  
+var a bool = false   //占一个字节
+
+go语言同一使用utf-8编码
+
+
+字符串的两种表现形式
+1.双引号,会识别转义字符
+2.反引号,以字符串的原生形式输出,包括换行和特殊字符
+
+
+只声明不赋值默认值为
+整数    0
+浮点    0
+字符串  ""
+布尔类型 false
+
+
+var n int32 = 100
+var f float64 = float64(n)
+
+
+将其他基本类型转换为字符串
+var str string = fmt.Sprintf("%d", num1)
+var str string = fmt.Sprintf("%f", f1)
+var str string = fmt.Sprintf("%t", bool)
+var str string = fmt.Sprintf("%c", byte)
+
+
+将字符串转换为其他类型
+var str string = "false"
+var b bool
+b, _ = strconv.ParseBool(str)
+
+var str string = "123456"
+var num int64
+num, _ = strconv.ParseInt(str, 10, 64)
+
+
+获取变量的地址  &num
+
+var num int32 = 100
+var ptr *int32 = &num
+获取指针指向的值 *ptr
+
+
+go的值类型都有对应的指针类型 形式为*数据类型
+
+值类型包括:int float bool string 数组 结构体
+引用类型:指针 slice切片 map 管道chan interface
+
+值类型:变量直接存储值,内存通常在栈中分配
+引用类型:变量存储的是一个地址, 这个地址对应的空间才真正存储数据,内存通常在堆上分配, 当没有
+         变量引用这个地址时, 该地址对应的数据空间就成为一个垃圾,由GC来回收
+
+
+命名采用驼峰发法
+如果首字母大写,可以被其他的包访问,如果首字母小写,只能在本包中使用
+
+运算符 /  不会有小数得到的是整数相当于python的//
+
+
+另种输入方式
+var name string
+fmt.Printf("%s", "请输入姓名")
+fmt.Scanln(&name)
+
+var age int32
+fmt.Printf("%d", 请输入年龄)
+fmt.Scanf("%s %d", &name, &age)
+
+
+二进制的原码 反码 补码
+二进制的最高位是符号位:0表示正数 1负数
+正数的原码 反码 补码都一样
+负数的反码=它的原码符号位不变,其他位取反
+负数的补码=它的反码+1
+0的反码,补码都是0
+在计算机运算的时候,都是以补码的方式来运算的
+
+
+switch/case后是一个表达式(常量,变量,一个带有返回值的函数)
+case后的各个表达式的值的数据类型,必须和switch的表达式数据一致
+case后面可以带多个表达式,使用逗号隔开
+case后面不需要带break,程序匹配到case就会执行代码段然后退出
+
+
+
+for循环
+1.
+  for i := 1; i <= 10; i++ {
+	fmt.Println("hello, world")
+  }
+
+2.
+  j := 1
+  for j <= 10 {
+	fmt.Println("hello, world")
+	j ++
+  }
+
+3.
+  j := 1
+  for {
+	 if j <= 10 {
+	 fmt.Println("hello, world")
+	 } else {
+		 break
+	 }
+	 j ++
+  }
+
+4.
+  var str string = "中国是一个大国家"
+  for index, val := range str {
+	fmt.Printf("%c  %d\n", val, index) //中0  国3
+  }
+
+5.
+  var str string = "中国是一个大国家"
+  str1 := []rune(str)
+  for index, val := range str1 {
+	fmt.Printf("%c  %d\n", val, index)  //中0 国1
+  }
+
+6.
+  var str string = "中国是一个大国家"
+  for index, val := range str {
+	fmt.Println(val, index)  //20013 0  22269 3
+  }
+
+4 5 6还是有区别的 有中文和英文的时候用5先进行转换,只有英文和数字采用4 5 6均可
+
+
+
+生成随机数
+rand.Seed(time.Now().Unix())
+n := rand.Intn(100) + 1
+
+
+break语句出现在多层嵌套语句块中时,可以通过标签指明要终止的是哪一层语句块
+
+
+
+goto label1
+label1:
+fmt.Println("goto后的语句")
+
+
+return在普通函数中, 表示跳出该函数,不再执行函数
+return在main函数中, 表示终止main程序, 也就是终止程序
+
+
+函数的基本语法
+func 函数名(形参列表)(返回值列表){函数体}
+
+
+
+函数的调用机制
+1.在调用一个函数时, 会给函数分配一个新的空间, 编译器会通过自身的处理让这个新的空间和其他的栈的空间区分开来
+2.在每个函数对应的栈中，数据空间是独立的,不会混淆
+3.当一个函数调用完毕,程序会销毁这个函数对应的栈空间
+
+
+go函数支持返回多个值
+如果返回多个值,在接收时,希望忽略某个返回值,则使用_符号表示占位忽略
+如果返回值只有一个,可以不写()
+
+
+函数在传参的时候 基本数据类型和数组默认都是值传递的,即进行值拷贝,在函数内修改,不会影响原来的值
+如果希望函数内的变量能修改函数外的变量,可以传入变量的地址&num,函数内以指针的方式操作变量，该方式操作的是按值传递的数据类型,即数组和基本数据类型
+
+
+go函数不允许重载:即函数名相同,形参个数不同
+
+
+为了简化数据类型定义,自定义数据类型
+基本语法:type 自定义数据类型名 数据类型  //相当于一个别名
+	 type myInt int
+	 type mySum func(int, int) int
+
+
+return的值可以写成下面这种
+func myCal (num1 int32, num2 int32) (sum int32, sub int32) {
+	sum = num1 + num2
+	sub = num1 - num2
+	return
+}
+
+可以使用_忽略返回值
+
+
+每一个源文件都可以包含一个__init__函数,该函数会在main函数执行前,被go调用
+
+
+如果一个文件同时包含全局变量定义,init函数和main函数,则执行的流程  全局变量定义-->init-->函数-->main函数
+
+
+
+匿名函数自调两种方式  
+func () {} ()    
+a := func () {}  a()
+
+
+strings.HasSuffix(name,".jpg") //存在返回true 不存在返回false
+
+
+defer的作用:在函数执行完毕后,及时的释放资源
+defer fmt.Println("hello")
+当程序执行到defer时,暂时不执行,会将defer后面的语句压入到独立的defer栈,
+当函数执行完毕后,再从defer栈,按照先入后出的出栈,执行
+在入栈的时候也会把相关的值拷贝入栈
+func test(){
+	file = openfile()
+	defer file.close()
+	//其他代码
+}
+
+
+两种传递方式
+  1.值传递
+  2.引用传递
+不管是值传递还是引用传递,传递给函数的都是变量的副本,不同的是,值传递的是值
+的拷贝,引用传递的是地址的拷贝
+
+
+
+字符串的API
+1.字符串的长度  len([]rune(str))
+2.字符串遍历,同时处理有中文的问题  r := []rune(str)
+3.字符串转整数  n, err = strconv.Atoi("hello")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
